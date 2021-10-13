@@ -1,1 +1,1 @@
-# Decomposing intraspecific alternative designs: implications for species and functional diversity
+# Decomposing intraspecific phenotypic variation: implications for species and functional diversity
