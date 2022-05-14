@@ -2,34 +2,19 @@
 
 # Read in observed values
 
-setwd("~/Desktop/Intrasp.perform.land/Outputs")
-parach.obs=read.csv("parach.csv", header=T, row.names=1)
+setwd("~/Documents/GitHub/Intraspecific.Designs")
+parach.obs=read.csv("PARACH.data.csv", header=T, row.names=1)
 
-# Slopes for two-way interaction model
+#### Slopes for two-way interaction model ####
 
-parach.lma.pc1=parach[106,2]+parach[120,2]*parach.obs$Comp1
-parach.rmf.pc1=parach[107,2]+parach[129,2]*parach.obs$Comp1
-parach.ssl.pc2=parach[109,2]+parach[132,2]*parach.obs$Comp2
-parach.thick.pc1=parach[108,2]+parach[133,2]*parach.obs$Comp1
+parach.lma.rmf=parach[106,2]+parach[112,2]*parach.obs$log_rmf
+parach.lma.rmf.pc2=parach[106,2]+parach[112,2]*parach.obs$log_rmf+parach[115,2]*parach.obs$Comp2+
+  parach[121,2]*(parach.obs$log_rmf*parach.obs$Comp2)
 
 # Plotting slopes against other trait/environment
 
-plot(parach.obs$Comp1, parach.lma.pc1,type="l", xlab="Soil Component 1",
+plot(parach.obs$log_rmf, parach.lma.rmf,type="l", xlab="Root Mass Fraction",
      ylab="Slope of LMA-RGR Relationship") # crosses 0
-plot(parach.obs$Comp1, parach.rmf.pc1,type="l", xlab="Soil Component 1",
-     ylab="Slope of RMF-RGR Relationship") # crosses 0
-plot(parach.obs$Comp2, parach.ssl.pc2,type="l", xlab="Soil Component 2",
-     ylab="Slope of SSL-RGR Relationship") # crosses 0
-plot(parach.obs$Comp1, parach.thick.pc1,type="l", xlab="Soil Component 1",
-     ylab="Slope of Thickness-RGR Relationship") # crosses 0
-
-# Slopes for three-way interaction models
-
-parach.lma.rmf.pc2=parach[106,2]+parach[118,2]*parach.obs$log_rmf+parach[121,2]*parach.obs$Comp2+
-  parach[141,2]*(parach.obs$log_rmf*parach.obs$Comp2)
-
-# Plotting slopes against other trait/environment
-
 plot((parach.obs$log_rmf*parach.obs$Comp2),parach.lma.rmf.pc2, xlab="RMF x Soil PC 2",
      ylab="Slope of LMA-RGR Relationship") # crosses 0
 
@@ -256,22 +241,12 @@ HL mean = -1.700693
 install.packages("visreg")
 library(visreg)
 
-parach.lma.pc1.mod=lm(log_rgr~log_lma*Comp1, data=parach.obs)
-parach.rmf.pc1.mod=lm(log_rgr~log_rmf*Comp1, data=parach.obs)
-parach.ssl.pc2.mod=lm(log_rgr~log_ssl*Comp2, data=parach.obs)
-parach.thick.pc1.mod=lm(log_rgr~log_thick*Comp1, data=parach.obs)
+parach.lma.rmf.mod=lm(log_rgr~log_lma*log_rmf, data=parach.obs)
 
-visreg2d(parach.lma.pc1.mod, "log_lma", "Comp1", plot.type="image", xlab="Leaf Mass per Area", ylab="Soil Comp 1", main="PARACH")
-visreg2d(parach.lma.pc1.mod, "log_lma", "Comp1", plot.type="persp", ylab="Soil Comp 1", zlab="\nRelative Growth Rate", xlab="Leaf Mass per Area",
-         main="PARACH",cex.main=1,nn=99, cex.lab=1,lwd=0.5, border="grey40", col=adjustcolor("blue",alpha.f=.5), ticktype="simple")
-visreg2d(parach.rmf.pc1.mod, "log_rmf", "Comp1", plot.type="image", xlab="Root Mass Fraction", ylab="Soil Comp 1", main="PARACH")
-visreg2d(parach.rmf.pc1.mod, "log_rmf", "Comp1", plot.type="persp", ylab="Soil Comp 1", zlab="\nRelative Growth Rate", xlab="Root Mass Fraction",
-         main="PARACH",cex.main=1,nn=99, cex.lab=1,lwd=0.5, border="grey40", col=adjustcolor("blue",alpha.f=.5),ticktype="simple")
-visreg2d(parach.ssl.pc2.mod, "log_ssl", "Comp2", plot.type="image", xlab="Specific Stem Length", ylab="Soil Comp 2", main="PARACH")
-visreg2d(parach.ssl.pc2.mod, "log_ssl", "Comp2", plot.type="persp", ylab="Soil Comp 2", zlab="\nRelative Growth Rate", xlab="Specific Stem Length",
-         main="PARACH",cex.main=1,nn=99, cex.lab=1,lwd=0.5, border="grey40", col=adjustcolor("blue",alpha.f=.5), ticktype="simple")
-visreg2d(parach.thick.pc1.mod, "log_thick", "Comp1", plot.type="image", xlab="Leaf Thickness", ylab="Soil Comp 1", main="PARACH")
-visreg2d(parach.thick.pc1.mod, "log_thick", "Comp1", plot.type="persp", ylab="Soil Comp 1", zlab="\nRelative Growth Rate", xlab="Leaf Thickness",
+visreg2d(parach.lma.rmf.mod, "log_lma", "log_rmf", plot.type="image", xlab="Leaf Mass per Area", 
+         ylab="Root Mass Fraction", main="PARACH")
+visreg2d(parach.lma.rmf.mod, "log_lma", "log_rmf", plot.type="persp", ylab="Root Mass Fraction", 
+         zlab="\nRelative Growth Rate", xlab="Leaf Mass per Area",
          main="PARACH",cex.main=1,nn=99, cex.lab=1,lwd=0.5, border="grey40", col=adjustcolor("blue",alpha.f=.5), ticktype="simple")
 
 parach.lma.rmf.pc2.mod=lm(log_rgr~log_lma*log_rmf*Comp2, data=parach.obs)
@@ -284,3 +259,5 @@ plot(predictorEffects(parach.lma.rmf.pc2.mod, ~ log_lma, xlevels = list(log_rmf=
      lattice=list(key.args=list(title ="Root Mass Fraction")),
      axes=list(grid=FALSE, x=list(rug=FALSE)), xlab="Leaf Mass per Area",
      ylab="Relative Growth Rate", main="")
+
+plot(allEffects(parach.lma.rmf.pc2.mod))

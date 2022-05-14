@@ -1,27 +1,22 @@
 ## PITTKE slopes
 
 # Read in observed values
-setwd("~/Desktop/Intrasp.perform.land/Outputs")
-pittke.obs=read.csv("pittke.csv", header=T, row.names=1)
+
+setwd("~/Documents/GitHub/Intraspecific.Designs")
+pittke.obs=read.csv("PITTKE.data.csv", header=T, row.names=1)
 
 # Slopes for two-way interaction model
 
-pittke.lma.rmf=pittke[79,2]+pittke[91,2]*pittke.obs$log_rmf
+pittke.lma.rmf=pittke[79,2]+pittke[85,2]*pittke.obs$log_rmf
+pittke.lma.rmf.pc1=pittke[79,2]+pittke[85,2]*pittke.obs$log_rmf+
+  pittke[87,2]*pittke.obs$Comp1+pittke[93,2]*(pittke.obs$log_rmf*pittke.obs$Comp1)
 
 # Plotting slopes against other trait/environment
 
 plot(pittke.obs$log_rmf, pittke.lma.rmf,type="l", xlab="Root Mass Fraction",
      ylab="Slope of LMA-RGR Relationship") # crosses 0
-
-# Slopes for three-way interaction models
-
-pittke.rmf.thick.pc1=pittke[80,2]+pittke[100,2]*pittke.obs$log_thick+
-  pittke[102,2]*pittke.obs$Comp1+pittke[113,2]*(pittke.obs$log_thick*pittke.obs$Comp1)
-
-# Plotting slopes against other trait/environment
-
-plot((pittke.obs$log_thick*pittke.obs$Comp1),pittke.rmf.thick.pc1, xlab="Thickness x Soil Component 1",
-     ylab="Slope of RMF-RGR Relationship") # crosses 0
+plot((pittke.obs$log_rmf*pittke.obs$Comp1),pittke.lma.rmf.pc1, xlab="RMF x Soil Component 1",
+     ylab="Slope of LMA-RGR Relationship") # barely crosses 0
 
 # Regression to get slope and intercept value for plotting of mean
 
@@ -172,15 +167,17 @@ visreg2d(pittke.lma.rmf.mod, "log_lma", "log_rmf", plot.type="persp", ylab="Root
          zlab="\nRelative Growth Rate", xlab="Leaf Mass per Area", main="PITTKE",cex.main=1,nn=99,
          cex.lab=1,lwd=0.5, border="grey40", col=adjustcolor("blue",alpha.f=.5), ticktype="simple")
 
-pittke.rmf.thick.pc1.mod=lm(log_rgr~log_rmf*log_thick*Comp1, data=pittke.obs)
+pittke.lma.rmf.pc1.mod=lm(log_rgr~log_lma*log_rmf*Comp1, data=pittke.obs)
 
 library(effects)
 pittke.rmf.thick.pc1.effects=allEffects(pittke.rmf.thick.pc1.mod)
 plot(pittke.rmf.thick.pc1.effects)
 
-plot(predictorEffects(pittke.rmf.thick.pc1.mod, ~ log_rmf, xlevels = list(log_thick=c(-3,3))),
+plot(predictorEffects(pittke.lma.rmf.pc1.mod, ~ log_lma, xlevels = list(log_rmf=c(-3,2))),
      index.cond=list(c(3,2,1,5,4)),lines=list(multiline=TRUE),
-     lattice=list(key.args=list(title ="Leaf Thickness")),
-     axes=list(grid=FALSE, x=list(rug=FALSE)), xlab="Root Mass Fraction",
+     lattice=list(key.args=list(title ="Root Mass Fraction")),
+     axes=list(grid=FALSE, x=list(rug=FALSE)), xlab="Leaf Mass per Area",
      ylab="Relative Growth Rate", main="")
+
+plot(allEffects(pittke.lma.rmf.pc1.mod))
 
