@@ -18,7 +18,10 @@ param.labels=c("LMA","RMF",
                "RMF x Soil.PC2", "LMA x RMF x Light",
                "LMA x RMF x Soil.PC1","LMA x RMF x Soil.PC2")
 
-dotchart(pseuin[137:152,2], labels=param.labels, cex=1, xlim=c(-0.35, 0.35),
+par(mar = c(6.1, 4.4, 4.1, 1.9))
+
+
+dotchart(pseuin[137:152,2], labels=param.labels, cex=1.5, xlim=c(-0.35, 0.35),
        main = expression(italic("P. indochinensis, n = 373")),
        xlab = "Standardized Coefficients")
 
@@ -46,7 +49,9 @@ param.labels=c("LMA","RMF",
                "RMF x Soil.PC2", "LMA x RMF x Light",
                "LMA x RMF x Soil.PC1","LMA x RMF x Soil.PC2")
 
-dotchart(parach[106:121,2], labels=param.labels, cex = 1,
+par(mar = c(6.1, 4.4, 4.1, 1.9))
+
+dotchart(parach[106:121,2], labels=param.labels, cex = 1.5,
          xlim=c(-0.45,0.45), main = expression(italic("P. chinensis, n = 194")),
          xlab = "Standardized Coefficients")
 
@@ -73,7 +78,9 @@ param.labels=c("LMA","RMF",
                "RMF x Soil.PC2", "LMA x RMF x Light",
                "LMA x RMF x Soil.PC1","LMA x RMF x Soil.PC2")
 
-dotchart(pittke[79:94,2], labels=param.labels, cex=1, xlim=c(-0.5,0.5),
+par(mar = c(6.1, 4.4, 4.1, 1.9))
+
+dotchart(pittke[79:94,2], labels=param.labels, cex=1.5, xlim=c(-0.5,0.5),
          main = expression(italic("P. kerrii, n = 108")),
          xlab = "Standardized Coefficients")
 
