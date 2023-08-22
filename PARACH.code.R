@@ -1,3 +1,6 @@
+library(effects)
+library(visreg)
+
 ## PARACH slopes
 
 # Read in observed values
@@ -11,14 +14,14 @@ parach.lma.rmf=parach[106,2]+parach[112,2]*parach.obs$log_rmf
 parach.lma.rmf.pc2=parach[106,2]+parach[112,2]*parach.obs$log_rmf+parach[115,2]*parach.obs$Comp2+
   parach[121,2]*(parach.obs$log_rmf*parach.obs$Comp2)
 
-# Plotting slopes against other trait/environment
+#### Plotting slopes against other trait/environment ####
 
 plot(parach.obs$log_rmf, parach.lma.rmf,type="l", xlab="Root Mass Fraction",
      ylab="Slope of LMA-RGR Relationship") # crosses 0
 plot((parach.obs$log_rmf*parach.obs$Comp2),parach.lma.rmf.pc2, xlab="RMF x Soil PC 2",
      ylab="Slope of LMA-RGR Relationship") # crosses 0
 
-# Regression to get slope and intercept value for plotting of mean
+#### Regression to get slope and intercept value for plotting of mean ####
 
 parach.lma.pc1.lm=lm(parach.lma.pc1~parach.obs$Comp1)
 parach.lma.pc1.lm$coefficients[1] # -0.01202049 Intercept
@@ -40,7 +43,7 @@ parach.lma.rmf.pc2.lm=lm(parach.lma.rmf.pc2~parach.obs$log_rmf*parach.obs$Comp2)
 parach.lma.rmf.pc2.lm$coefficients[1] # -0.01202049 Intercept
 parach.lma.rmf.pc2.lm$coefficients[2] # -0.1425948 Slope
 
-# Code to produce 95% credible intervals around first partial derivative slopes
+#### Code to produce 95% credible intervals around first partial derivative slopes ####
 
 parach.lma.pc1.slopes=matrix(data=NA, nrow=194, ncol=1000)
 parach.rmf.pc1.slopes=matrix(data=NA, nrow=194, ncol=1000)
@@ -144,7 +147,7 @@ abline(-0.01202049, -0.1425948, col="black") # mean value
 abline(-4.939488,-0.31751327, col="gray") # lower limit
 abline(5.123500,0.03598574, col="gray") # upper limit
 
-## Observed ranges of traits and environmental variables
+### Observed ranges of traits and environmental variables ####
 
 range(parach.obs$Comp1) # -6.062326  5.002055
 range(parach.obs$Comp2) # -3.993391  3.370313
@@ -220,7 +223,7 @@ HL.quantile.slope=quantile(parach.lma.rmf.pc2.slopes.HL[,1], probs=c(0.025, 0.97
 # 2.5%     97.5% 
 -23.14270  19.05603
 
-# test for significant difference between mean slopes
+#### test for significant difference between mean slopes ####
 t.test(parach.lma.rmf.pc2.slopes.HH,parach.lma.rmf.pc2.slopes.LH)
 # p < 0.0001
 t = 5.0564
@@ -237,9 +240,7 @@ CI = 3.220198 5.108956
 LL mean = 2.463884
 HL mean = -1.700693 
 
-# Plotting
-install.packages("visreg")
-library(visreg)
+#### Plotting ####
 
 parach.lma.rmf.mod=lm(log_rgr~log_lma*log_rmf, data=parach.obs)
 
@@ -247,17 +248,29 @@ visreg2d(parach.lma.rmf.mod, "log_lma", "log_rmf", plot.type="image", xlab="Leaf
          ylab="Root Mass Fraction", main="PARACH")
 visreg2d(parach.lma.rmf.mod, "log_lma", "log_rmf", plot.type="persp", ylab="Root Mass Fraction", 
          zlab="\nRelative Growth Rate", xlab="Leaf Mass per Area",
-         main="PARACH",cex.main=1,nn=99, cex.lab=1,lwd=0.5, border="grey40", col=adjustcolor("blue",alpha.f=.5), ticktype="simple")
+         main=expression(italic("P. chinensis")),cex.main=2,nn=99, cex.lab=1.5,lwd=0.5, border="grey40", col=adjustcolor("blue",alpha.f=.5), ticktype="simple")
+
+
 
 parach.lma.rmf.pc2.mod=lm(log_rgr~log_lma*log_rmf*Comp2, data=parach.obs)
-
-library(effects)
-
 parach.lma.rmf.pc2.effects=allEffects(parach.lma.rmf.pc2.mod)
 
-plot(predictorEffects(parach.lma.rmf.pc2.mod, ~ log_lma, xlevels = list(log_rmf=c(-3,3))),index.cond=list(c(3,2,1,5,4)),lines=list(multiline=TRUE),
+plot(predictorEffects(parach.lma.rmf.pc2.mod, ~ log_lma, xlevels = list(log_rmf=c(-3,3))),
+     index.cond=list(c(3,2,1,5,4)),lines=list(multiline=TRUE),
      lattice=list(key.args=list(title ="Root Mass Fraction")),
      axes=list(grid=FALSE, x=list(rug=FALSE)), xlab="Leaf Mass per Area",
      ylab="Relative Growth Rate", main="")
+
+plot(predictorEffects(parach.lma.rmf.pc2.mod, ~ log_lma, xlevels = list(log_rmf=c(-3,3))),
+     index.cond=list(c(5,1)),lines=list(multiline=TRUE, col=c("black","gray")),
+     lattice=list(key.args=list(title ="Root Mass Fraction")),
+     axes=list(grid=FALSE, x=list(rug=FALSE)), xlab="Leaf Mass per Area",
+     ylab="Relative Growth Rate", main=expression(italic("P. chinensis")))
+
+plot(predictorEffects(parach.lma.rmf.pc2.mod, ~ log_lma, xlevels = list(log_rmf=c(-3,3))),
+     index.cond=list(c(5,1)),lines=list(multiline=TRUE, col=c("black","gray")),
+     lattice=list(key.args=list(title ="Root Mass Fraction")),
+     axes=list(x=list(lab="Leaf Mass per Area", rug=FALSE), y=list(lab="Relative Growth Rate")),
+     main="PARACH")
 
 plot(allEffects(parach.lma.rmf.pc2.mod))

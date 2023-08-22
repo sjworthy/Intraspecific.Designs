@@ -164,8 +164,9 @@ pittke.lma.rmf.mod=lm(log_rgr~log_lma*log_rmf, data=pittke.obs)
 
 visreg2d(pittke.lma.rmf.mod, "log_lma", "log_rmf", plot.type="image", xlab="Leaf Mass per Area", ylab="Root Mass Fraction", main="PITTKE")
 visreg2d(pittke.lma.rmf.mod, "log_lma", "log_rmf", plot.type="persp", ylab="Root Mass Fraction",
-         zlab="\nRelative Growth Rate", xlab="Leaf Mass per Area", main="PITTKE",cex.main=1,nn=99,
-         cex.lab=1,lwd=0.5, border="grey40", col=adjustcolor("blue",alpha.f=.5), ticktype="simple")
+         zlab="\nRelative Growth Rate", xlab="Leaf Mass per Area", main=expression(italic("P. kerrii")),cex.main=2,nn=99,
+         cex.lab=1.5,lwd=0.5, border="grey40", col=adjustcolor("blue",alpha.f=.5), ticktype="simple")
+
 
 pittke.lma.rmf.pc1.mod=lm(log_rgr~log_lma*log_rmf*Comp1, data=pittke.obs)
 
@@ -178,6 +179,13 @@ plot(predictorEffects(pittke.lma.rmf.pc1.mod, ~ log_lma, xlevels = list(log_rmf=
      lattice=list(key.args=list(title ="Root Mass Fraction")),
      axes=list(grid=FALSE, x=list(rug=FALSE)), xlab="Leaf Mass per Area",
      ylab="Relative Growth Rate", main="")
+
+plot(predictorEffects(pittke.lma.rmf.pc1.mod, ~ log_lma, xlevels = list(log_rmf=c(-3,2))),
+     index.cond=list(c(5,1)),lines=list(multiline=TRUE, col=c("black","gray")),
+     lattice=list(key.args=list(title ="Root Mass Fraction")),
+     axes=list(grid=FALSE, x=list(rug=FALSE)), xlab="Leaf Mass per Area",
+     ylab="Relative Growth Rate", main=expression(italic("P. kerrii")))
+
 
 plot(allEffects(pittke.lma.rmf.pc1.mod))
 
