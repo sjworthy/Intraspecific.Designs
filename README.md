@@ -5,3 +5,4 @@
 ### Intraspecific alternative phenotypes contribute to variation in species’ strategies for growth
 #### Oecologia
 
+<a href="https://doi.org/10.5281/zenodo.11005324"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.11005324.svg" alt="DOI"></a>
